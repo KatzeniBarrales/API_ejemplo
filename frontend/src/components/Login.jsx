@@ -26,7 +26,7 @@ export const Login = () => {
             <i className='fas fa-user fa-5x'></i>
           </div>
           <div className='card-header text-center mt-3'>
-            <h4>Inicio de sesión del jefeeeeeeeeeeeee!!!</h4>
+            <h4>Inicio de sesión</h4>
           </div>{/* card-header text-center mt-3 */}
           <div className='card-body'>
             <form onSubmit={login}>

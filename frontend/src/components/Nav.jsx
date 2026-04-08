@@ -14,6 +14,11 @@ export const Nav = () => {
               aria-label="Toggle navigation"
         > <span className='navbar-toggler-icon'></span>
         </button>
+<li className='nav-item'>
+              <NavLink className='nav-link' to='/employees'>
+                <i className='fas fa-user'> REFACCIONARIA DE MOTOS</i>
+              </NavLink>
+            </li>
         {
           user.login?(
         <div className='collapse navbar-collapse' id='navbarNav'>
