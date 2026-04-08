@@ -1,0 +1,4 @@
+node_modules/
+BackEnd/db/data/
+*.lock
+.env
