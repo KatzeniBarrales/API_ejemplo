@@ -41,7 +41,7 @@ export const Nav = () => {
           </ul>
         </div>)/*collapse navbar-collapse*/
       }
-      </div> /*container*/
+      </div> 
     </nav>
   )
 }

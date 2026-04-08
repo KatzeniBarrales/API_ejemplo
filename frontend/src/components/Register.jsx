@@ -61,7 +61,7 @@ const Register = () => {
           </div>{/* card */}
         </div>{/* col-md-6 mx-auto */}
       </div>{/* row */}
-    </div>/*container mt-4*/</div>
+    </div>{/*container mt-4*/}</div>
   )
 }
 
