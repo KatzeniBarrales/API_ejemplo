@@ -3,21 +3,40 @@ import { Login } from "./components/Login";
 import { Nav } from "./components/Nav";
 import  Employees  from "./components/Employees";
 import  Register  from "./components/Register";
+import Services from "./components/Services";
 import axios from "axios";
 import { useUser } from "./context/UserContext";
+import { useEffect } from "react";
 axios.defaults.baseURL='http://localhost:4000/api'
 
 
 function App() {
   const {user}=useUser();
-  axios.defaults.headers.common["Authorization"]=`Bearer ${user.token}`;
+ 
+  const Public = ({children}) => {
+      if (!user.login) return children;
+      if (user.nivel===2) return <Navigate to='/employees'/>
+      if (user.nivel===1) return <Navigate to='/services'/>
+  };
+
+    const Private=({children})=>{
+    return user.token ? children : <Navigate to='/'/>
+   }
+
+   useEffect(()=>{
+    if(user?.token){
+      axios.defaults.headers.common["Authorization"]=`Bearer ${user.token}`;
+    }
+  }, [user?.token]);
+
   return (
     <BrowserRouter>
     <Nav/>
       <Routes>
-        <Route path='/'element={<Login/>}/>
-        <Route path='/employees'element={<Employees/>}/>
-        <Route path='/register'element={<Register/>}/>
+        <Route path='/'element={<Public><Login/></Public>}/>
+        <Route path='/employees'element={<Private><Employees/></Private>}/>
+        <Route path='/register'element={<Public><Register/></Public>}/>
+        <Route path='/services'element={<Private><Services/></Private>}/>
       </Routes>
     </BrowserRouter>
   );

@@ -69,8 +69,14 @@ const deleteEmployee = async (id) => {
   };
 
 //Manejo de ventana modal
+const [employee, setEmployee] = useState (false);
+const [edit, setEdit] = useState (false);
 const [open, setOpen] = useState(false);
-const onOpenModal = () => setOpen(true);  
+const onOpenModal = (edit, employee) =>{
+setOpen(true); 
+setEdit(edit);
+setEmployee(employee);
+}  
 const onCloseModal = () => setOpen(false);
 
   return (
@@ -78,7 +84,7 @@ const onCloseModal = () => setOpen(false);
       <nav className='navbar py-4'>
         <div className='container'>
           <div className='col-md-3'>
-            <button className='btn btn-primary' onClick={()=>onOpenModal()}>
+            <button className='btn btn-primary' onClick={()=>onOpenModal(false, {})}>
               <i className='fas fa-plus'></i> Add empleado
             </button>
           </div>
@@ -127,7 +133,7 @@ const onCloseModal = () => setOpen(false);
                               onClick={()=>deleteEmployee(item._id)}>
                                 <i className='fas fa-trash'></i>
                               </button>
-                              <button className='btn btn-warning'>
+                              <button className='btn btn-warning'onClick={()=>onOpenModal(true, item)}>
                                 <i className='fas fa-edit'></i>
                               </button>
                             </td>
@@ -142,7 +148,11 @@ const onCloseModal = () => setOpen(false);
           </div>{/*row*/}
         </div>{/*container*/}
       </section>
-      <ModalActions open={open} onCloseModal={onCloseModal} getEmployees={getEmployees}/>
+      <ModalActions open={open} 
+      onCloseModal={onCloseModal} 
+      getEmployees={getEmployees} 
+      edit={edit}
+      employee={employee}/>
     </div>/*return*/
   )
 }

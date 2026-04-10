@@ -7,7 +7,7 @@ const initialState = {login:false, token:"",name:"",nivel:""};
 
 export const UserProvider=(props) => {
   const [user, setUser] = useState(initialState);
-  
+
   //en initial, estamos guardando los datos del usuario logueado actual
   useEffect(()=>{
     const initial = JSON.parse(localStorage.getItem("user"));
@@ -26,17 +26,15 @@ export const UserProvider=(props) => {
         };
         localStorage.setItem("user",JSON.stringify(userLogin));
         setUser(userLogin);
-        navigate('/employees');
-        /*
-        if (data.data.nivel==="0"){
+        //navigate('/employees');
+        if (data.data.nivel==="1"){
           console.log("Si ento al nivel 0");
           navigate('/employees');
         }
-        if (data.data.nivel==="1"){
+        if (data.data.nivel==="2"){
           console.log("Si ento al nivel 1");
-          navigate('/rentas');
+          navigate('/ventas');
         }
-          */
         Swal.fire({
           icon: 'success',
           title: data.message,
@@ -69,7 +67,15 @@ export const UserProvider=(props) => {
         };
         localStorage.setItem("user",JSON.stringify(userLogin));
         setUser(userLogin);
-        navigate('/employees');
+        //navigate('/employees');
+        if (data.data.nivel===1){
+          console.log("Si ento al nivel 0");
+          navigate('/employees');
+        }
+        if (data.data.nivel===2){
+          console.log("Si ento al nivel 1");
+          navigate('/ventas');
+        }
         Swal.fire({
           icon: 'success',
           title: data.message,
@@ -102,6 +108,7 @@ export const UserProvider=(props) => {
     registerUser,
     exit
    };
+
    return <UserContext.Provider value={value} {...props}/>
 }
 
@@ -112,5 +119,3 @@ export function useUser(){
   }
   return context;
 }
-
-

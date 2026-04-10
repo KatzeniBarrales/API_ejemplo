@@ -1,9 +1,9 @@
 import { EmpleadoModel } from "../models/empleado.model.js";
 import message from '../utils/messages.js';
+
 const {messageGeneral} = message;
 
 const empleadoCtrl={};
-
 empleadoCtrl.createEmpleado= async(req,res)=>{
     try{
         const data= req.body;
@@ -39,7 +39,6 @@ empleadoCtrl.listById = async(req,res)=>{
         messageGeneral(res,500,false,"",error.message);
     }
 }
-
 empleadoCtrl.listEmployeeBoss = async(req,res) =>{
   try {
     const resp = await EmpleadoModel.find({ jefe:req.userid}).populate({

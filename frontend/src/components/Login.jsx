@@ -33,12 +33,12 @@ export const Login = () => {
               <div className='mb-3'>
                 <label className='form-label'>Correo:</label>
                 <input type="email" name="correo" className='form-control' 
-                onChange={(e)=>handleChange(e)} autoFocus required/>
+                onChange={(e)=>handleChange(e)} placeholder= "Ingrese su correo" autoFocus required/>
               </div>
               <div className='mb-3'>
                 <label className='form-label'>Contraseña:</label>
                 <input type="password" name="password" className='form-control' 
-                onChange={(e)=>handleChange(e)} required/>
+                onChange={(e)=>handleChange(e)} placeholder= "Ingrese su contraseña" required/>
               </div>{/* mb-3 */}
               <button type="submit" className='form-control btn btn-primary'>
               Login
