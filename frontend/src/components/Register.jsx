@@ -24,13 +24,13 @@ const Register = () => {
               <i className='fas fa-user-plus fa-5x'></i>
             </div>
             <div className='card-header text-center mt-3'>
-              <h4>Crear Registro de jefe!!!</h4>
+              <h4>REGISTRO DE USUARIOS</h4>
             </div>{/* card-header text-center mt-3 */}
             <div className='card-body'>
               <form onSubmit={register}>
               <div className='mb-3'>
                   <label className='form-label'>Nombre:</label>
-                  <input type="text" name="name" className='form-control' autoFocus
+                  <input type="text" name="nombre" className='form-control' autoFocus
                   onChange={(e)=>handleChange(e)} required/>
                 </div>
                 <div className='mb-3'>
@@ -43,9 +43,8 @@ const Register = () => {
                   <select name="nivel" className='form-control' 
                   onChange={handleChange} required>
                     <option value="">Selecciona un nivel</option>
-                    <option value="1">Nivel 1</option>
-                    <option value="2">Nivel 2</option>
-                    <option value="3">Nivel 3</option>
+                    <option value="1">Nivel 1 [Adminsitrador]</option>
+                    <option value="2">Nivel 2 [Empleado]</option>
                   </select>
                 </div>
                 <div className='mb-3'>

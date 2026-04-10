@@ -69,11 +69,11 @@ export const UserProvider=(props) => {
         setUser(userLogin);
         //navigate('/employees');
         if (data.data.nivel===1){
-          console.log("Si ento al nivel 0");
+          console.log("Si entro al nivel 1");
           navigate('/employees');
         }
         if (data.data.nivel===2){
-          console.log("Si ento al nivel 1");
+          console.log("Si ento al nivel 2");
           navigate('/ventas');
         }
         Swal.fire({
