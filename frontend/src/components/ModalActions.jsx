@@ -12,7 +12,7 @@ const ModalActions = ({open,onCloseModal,getEmployees,edit,employee}) => {
         correo:"",
         tcontrato:"Fijo"
     }
-
+   
 const [dataEmployee, setDataEmployee]=useState(initialState);
 const tcontratos=["Fijo","Temporal","Practicante"];
 
