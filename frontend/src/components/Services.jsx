@@ -67,7 +67,7 @@ const Ventas = () => {
                   <table className='table table-hover align-middle mb-0'>
                     <thead className='table-dark'>
                       <tr>
-                        <th>#</th>
+                        <th># FOLIO</th>
                         <th>Cliente</th>
                         <th>Producto</th>
                         <th>Cant.</th>

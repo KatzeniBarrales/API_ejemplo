@@ -27,7 +27,8 @@ const ModalActionsVentas = ({ open, onCloseModal, getVentas, edit, venta }) => {
         ...venta,
         // Si en la DB el campo se llama distinto, aquí lo unificamos:
         tipo_cliente: venta.tipo_cliente || venta.tipo || "",
-        tipo_producto: venta.tipo_producto || ""
+        tipo_producto: venta.tipo_producto || "",
+        descripcion_p: venta.descripcion_p || ""
       });
     } else {
       setDataVentas(initialState);
@@ -56,20 +57,20 @@ const ModalActionsVentas = ({ open, onCloseModal, getVentas, edit, venta }) => {
     }
   };
 
-  const saveVenta = async () => {
+const saveVenta = async () => {
     // Creamos una copia de los datos para no modificar lo que el usuario ve en el formulario
     const dataAEnviar = {
       ...dataVentas,
       // Si el valor es "Frecuente", enviamos "F", si es "Mostrador", enviamos "M"
       // Si ya es una letra, la dejamos tal cual.
-      tipo_cliente: dataVentas.tipo_cliente === "Frecuente" ? "F" :
-        dataVentas.tipo_cliente === "Mostrador" ? "M" :
-          dataVentas.tipo_cliente
+      tipo_cliente: dataVentas.tipo_cliente === "Frecuente" ? "F" : 
+                     dataVentas.tipo_cliente === "Mostrador" ? "M" : 
+                     dataVentas.tipo_cliente
     };
 
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-
+      
       // Enviamos 'dataAEnviar' en lugar de 'dataVentas'
       const { data } = await axios.post("http://localhost:4000/api/venta", dataAEnviar, config);
 
