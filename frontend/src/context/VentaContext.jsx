@@ -2,7 +2,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useUser } from "./UserContext"; // Importamos el contexto de usuario
 
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext, useEffect, useCallback } from "react";
 
 const VentaContext = createContext();
 
@@ -12,19 +12,27 @@ export const VentaProvider = (props) => {
   const [loading, setLoading] = useState(false);
 
   // Función para obtener todas las ventas (ListAllVentas)
-  const getVentas = async () => {
-    try {
-      setLoading(true);
-      const { data } = await axios.get('http://localhost:4000/api/venta');
-      if (data.ok) {
-        setVentas(data.data);
-      }
-    } catch (error) {
-      console.log('Error al obtener ventas:', error.message);
-    } finally {
-      setLoading(false);
+// Asegúrate de importar useCallback arriba
+const getVentas = useCallback(async () => {
+  if (!user.token) return; // No pidas nada si no hay sesión
+
+  try {
+    setLoading(true);
+    // Usamos el token en los headers para que el backend te deje pasar
+    const config = {
+      headers: { Authorization: `Bearer ${user.token}` }
+    };
+    const { data } = await axios.get('http://localhost:4000/api/venta', config);
+    
+    if (data.ok) {
+      setVentas(data.data);
     }
-  };
+  } catch (error) {
+    console.log('Error al obtener ventas:', error.message);
+  } finally {
+    setLoading(false);
+  }
+}, [user.token]); // La función solo cambia si el token cambia
 
   // Función para eliminar una venta
   const deleteVenta = async (id) => {
