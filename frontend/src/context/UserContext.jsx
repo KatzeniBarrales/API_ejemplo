@@ -1,40 +1,43 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 
-const UserContext= createContext();
-const initialState = {login:false, token:"",name:"",nivel:""};
+const UserContext = createContext();
+const initialState = { login: false, token: "", name: "", nivel: "" };
 
-export const UserProvider=(props) => {
+export const UserProvider = (props) => {
   const [user, setUser] = useState(initialState);
 
-  //en initial, estamos guardando los datos del usuario logueado actual
-  useEffect(()=>{
+  // Sincronizar con localStorage al cargar la app
+  useEffect(() => {
     const initial = JSON.parse(localStorage.getItem("user"));
-    initial ? initial.login && setUser(initial): setUser(initialState);
-  },[]);
+    if (initial && initial.login) {
+      setUser(initial);
+    } else {
+      setUser(initialState);
+    }
+  }, []);
 
-  const loginUser=async(dataUser,navigate)=>{
+  const loginUser = async (dataUser, navigate) => {
     try {
-      const {data} = await axios.post('http://localhost:4000/api/login',dataUser);
-      if (data.ok){
-        const userLogin={
-          login:true,
-          token:data.data.token,
-          name:data.data.nombre,
-          nivel:data.data.nivel
+      const { data } = await axios.post('http://localhost:4000/api/login', dataUser);
+      if (data.ok) {
+        const userLogin = {
+          login: true,
+          token: data.data.token,
+          name: data.data.nombre,
+          nivel: data.data.nivel
         };
-        localStorage.setItem("user",JSON.stringify(userLogin));
+        localStorage.setItem("user", JSON.stringify(userLogin));
         setUser(userLogin);
-        //navigate('/employees');
-        if (data.data.nivel==="1"){
-          console.log("Si entro al nivel 1");
+
+        // Redirección según nivel
+        if (data.data.nivel === "1") {
           navigate('/employees');
-        }
-        if (data.data.nivel==="2"){
-          console.log("Si entro al nivel 2");
+        } else if (data.data.nivel === "2") {
           navigate('/services');
         }
+
         Swal.fire({
           icon: 'success',
           title: data.message,
@@ -43,39 +46,31 @@ export const UserProvider=(props) => {
         });
       }
     } catch (error) {
-      if(!error.response.data.ok){
-        return Swal.fire({
-           icon: 'error',
-           title: error.response.data.message,
-           showConfirmButton: false,
-           timer: 1500
-         });
-       }
-       console.log('error en la función login ',error.message);
+      const msg = error.response?.data?.message || 'Error en el login';
+      Swal.fire({ icon: 'error', title: msg, timer: 1500 });
+      console.log('error en login:', error.message);
     }
   }
 
-  const registerUser=async(dataUser,navigate)=>{
+  const registerUser = async (dataUser, navigate) => {
     try {
-      const {data} = await axios.post('http://localhost:4000/api/register',dataUser);
-      if(data.ok){
-        const userLogin= {
-          login:true,
+      const { data } = await axios.post('http://localhost:4000/api/register', dataUser);
+      if (data.ok) {
+        const userLogin = {
+          login: true,
           token: data.data.token,
           name: data.data.nombre,
-          nivel:data.data.nivel
+          nivel: data.data.nivel
         };
-        localStorage.setItem("user",JSON.stringify(userLogin));
+        localStorage.setItem("user", JSON.stringify(userLogin));
         setUser(userLogin);
-        //navigate('/employees');
-        if (data.data.nivel==="1"){
-          console.log("Si entro al nivel 1");
+
+        if (data.data.nivel === "1") {
           navigate('/employees');
-        }
-        if (data.data.nivel==="2"){
-          console.log("Si entro al nivel 2");
+        } else if (data.data.nivel === "2") {
           navigate('/services');
         }
+
         Swal.fire({
           icon: 'success',
           title: data.message,
@@ -84,38 +79,34 @@ export const UserProvider=(props) => {
         });
       }
     } catch (error) {
-      if(!error.response.data.ok){
-       return Swal.fire({
-          icon: 'error',
-          title: error.response.data.message,
-          showConfirmButton: false,
-          timer: 1500
-        });
-      }
-      console.log('error en la función register ',error.message);
+      const msg = error.response?.data?.message || 'Error en el registro';
+      Swal.fire({ icon: 'error', title: msg, timer: 1500 });
+      console.log('error en register:', error.message);
     }
   };
 
-  const exit=()=>{
+  // FUNCIÓN EXIT CORREGIDA
+  const exit = () => {
     setUser(initialState);
-    localStorage.removeItem(user);
+    localStorage.removeItem("user"); // Borramos la llave correcta
     localStorage.clear();
+    window.location.href = "/"; // Forzamos el regreso al login
   }
 
-  const value={
+  const value = {
     loginUser,
     user,
     registerUser,
     exit
-   };
+  };
 
-   return <UserContext.Provider value={value} {...props}/>
+  return <UserContext.Provider value={value} {...props} />
 }
 
-export function useUser(){
-  const context=useContext(UserContext);
-  if(!context){
-    throw new Error('useUser error');
+export function useUser() {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error('useUser debe estar dentro de un UserProvider');
   }
   return context;
 }

@@ -1,43 +1,49 @@
+import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useUser } from "./UserContext"; // Importamos el contexto de usuario
-
-import { createContext, useState, useContext, useEffect, useCallback } from "react";
+import { useUser } from "./UserContext";
 
 const VentaContext = createContext();
 
-export const VentaProvider = (props) => {
+export const VentaProvider = ({ children }) => {
   const { user } = useUser();
   const [ventas, setVentas] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Función para obtener todas las ventas (ListAllVentas)
-// Asegúrate de importar useCallback arriba
-const getVentas = useCallback(async () => {
-  if (!user.token) return; // No pidas nada si no hay sesión
+  // 1. Definimos getVentas con useCallback para evitar el bucle infinito
+  const getVentas = useCallback(async () => {
+    // Verificamos que exista el token antes de disparar la petición
+    if (!user || !user.token) return;
 
-  try {
-    setLoading(true);
-    // Usamos el token en los headers para que el backend te deje pasar
-    const config = {
-      headers: { Authorization: `Bearer ${user.token}` }
-    };
-    const { data } = await axios.get('http://localhost:4000/api/venta', config);
-    
-    if (data.ok) {
-      setVentas(data.data);
+    try {
+      setLoading(true);
+      const config = {
+        headers: { Authorization: `Bearer ${user.token}` }
+      };
+      const { data } = await axios.get('http://localhost:4000/api/venta', config);
+
+      if (data.ok) {
+        setVentas(data.data);
+      }
+    } catch (error) {
+      console.error('Error al obtener ventas:', error.message);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.log('Error al obtener ventas:', error.message);
-  } finally {
-    setLoading(false);
-  }
-}, [user.token]); // La función solo cambia si el token cambia
+  }, [user?.token]); // Solo se recrea si el token cambia
 
-  // Función para eliminar una venta
+  // 2. Efecto para cargar ventas al iniciar sesión o limpiar al salir
+  useEffect(() => {
+    if (user?.login) {
+      getVentas();
+    } else {
+      setVentas([]);
+    }
+  }, [user?.login, getVentas]);
+
   const deleteVenta = async (id) => {
     try {
-      Swal.fire({
+      const result = await Swal.fire({
         title: '¿Estás seguro?',
         text: "¡No podrás revertir esto!",
         icon: 'warning',
@@ -45,41 +51,47 @@ const getVentas = useCallback(async () => {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Sí, eliminar'
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          const { data } = await axios.delete(`http://localhost:4000/api/venta/delete/${id}`);
-          if (data.ok) {
-            Swal.fire('Eliminado', data.message, 'success');
-            getVentas(); // Recargamos la lista
-          }
-        }
       });
-    } catch (error) {
-      console.log('Error al eliminar venta:', error.message);
-    }
-  };
 
-  // Función para buscar por nombre de cliente
-  const searchVenta = async (nombre) => {
-    try {
-      if (nombre === "") return getVentas(); // Si está vacío, traer todas
-      const { data } = await axios.get(`http://localhost:4000/api/venta/buscar/${nombre}`);
-      if (data.ok) {
-        setVentas(data.data);
+      if (result.isConfirmed) {
+        const { data } = await axios.delete(`http://localhost:4000/api/venta/delete/${id}`);
+        if (data.ok) {
+          Swal.fire('Eliminado', data.message, 'success');
+          getVentas();
+        }
       }
     } catch (error) {
-      console.log('Error en la búsqueda:', error.message);
+      console.error('Error al eliminar venta:', error.message);
     }
   };
 
-// VentaContext.jsx
-useEffect(() => {
-    if (user.login) {
-        getVentas();
-    } else {
-        setVentas([]); // Limpia la tabla al cerrar sesión
+  const searchVenta = async (nombre) => {
+    try {
+      // Si el input está vacío, regresamos a la lista completa
+      if (!nombre || nombre.trim() === "") {
+        return getVentas();
+      }
+
+      const config = {
+        headers: { Authorization: `Bearer ${user.token}` }
+      };
+
+      const { data } = await axios.get(
+        `http://localhost:4000/api/venta/search/${nombre}`,
+        config
+      );
+
+      if (data.ok) {
+        // Asegúrate de que el backend mande los datos en data.data
+        setVentas(data.data);
+      } else {
+        setVentas([]); // Si no hay éxito, limpiamos la tabla
+      }
+    } catch (error) {
+      console.error('Error en la búsqueda:', error.message);
+      setVentas([]); // Si hay error (como un 404), mostramos la tabla vacía
     }
-}, [user.login, getVentas]); // Se dispara cuando el login cambia
+  };
 
   const value = {
     ventas,
@@ -89,13 +101,9 @@ useEffect(() => {
     loading
   };
 
-  return <VentaContext.Provider value={value} {...props} />;
+  return <VentaContext.Provider value={value}>{children}</VentaContext.Provider>;
 };
 
-// Al final de VentaContext.jsx
-export const useVenta = () => {
-    return useContext(VentaContext);
-};
+export const useVenta = () => useContext(VentaContext);
 
-// Asegúrate de que esta línea exista si usas export default
 export default VentaProvider;
