@@ -13,12 +13,9 @@ const ModalActions = ({ open, onCloseModal, data, setData, save, edit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Forzamos el nivel 2 internamente antes de guardar
-    const dataWithLevel = { ...data, nivel: "2" };
-    
-    // Si tu función save usa directamente el estado 'data' del padre, 
-    // asegúrate de que el initialState en Employees.jsx ya tenga nivel: "2"
-    save(dataWithLevel); 
+    // Llamamos a save() directamente. 
+    // Asegúrate de que en Employees.jsx el initialState tenga nivel: "2"
+    save(); 
   };
 
   if (!data) return null;
@@ -32,16 +29,12 @@ const ModalActions = ({ open, onCloseModal, data, setData, save, edit }) => {
           <h4 className="text-uppercase" style={{ color: '#555', letterSpacing: '3px', fontWeight: '300' }}>
             {edit ? 'Editar Empleado' : 'Añadir Empleado'}
           </h4>
-          {/* Badge sutil para indicar el rol automáticamente */}
-          <span className="badge bg-light text-dark border text-uppercase" style={{ fontSize: '10px', letterSpacing: '1px' }}>
-            Nivel 2 [Empleado]
-          </span>
         </div>
 
         <form onSubmit={handleSubmit}>
           {/* NOMBRE */}
           <div className="mb-4">
-            <label className="form-label" style={{ color: '#999', fontSize: '14px' }}>Nombre:</label>
+            <label className="form-label" style={{ color: '#000000', fontSize: '14px' }}>Nombre:</label>
             <input 
               type="text" 
               name="name" 
@@ -56,7 +49,7 @@ const ModalActions = ({ open, onCloseModal, data, setData, save, edit }) => {
 
           {/* CORREO */}
           <div className="mb-4">
-            <label className="form-label" style={{ color: '#999', fontSize: '14px' }}>Correo:</label>
+            <label className="form-label" style={{ color: '#000000', fontSize: '14px' }}>Correo:</label>
             <input 
               type="email" 
               name="correo" 
@@ -68,10 +61,22 @@ const ModalActions = ({ open, onCloseModal, data, setData, save, edit }) => {
             />
           </div>
 
+          {/* NIVEL (MOSTRAR SIN EDITAR) */}
+          <div className="mb-4">
+            <label className="form-label" style={{ color: '#000000', fontSize: '14px' }}>Nivel:</label>
+            <input 
+              type="text" 
+              className="form-control" 
+              value="2" 
+              readOnly 
+              style={{ backgroundColor: '#e9ecef', border: 'none', height: '45px', color: '#6c757d', cursor: 'not-allowed' }}
+            />
+          </div>
+
           {/* CONTRASEÑA (SOLO PARA REGISTRO NUEVO) */}
           {!edit && (
             <div className="mb-5">
-              <label className="form-label" style={{ color: '#999', fontSize: '14px' }}>Contraseña:</label>
+              <label className="form-label" style={{ color: '#000000', fontSize: '14px' }}>Contraseña:</label>
               <input 
                 type="password" 
                 name="password" 
@@ -87,7 +92,7 @@ const ModalActions = ({ open, onCloseModal, data, setData, save, edit }) => {
           <button 
             type="submit" 
             className="btn btn-dark w-100 py-3 text-uppercase" 
-            style={{ backgroundColor: '#1a1a1a', border: 'none', letterSpacing: '2px', fontSize: '14px' }}
+            style={{ backgroundColor: '#1a1a1a', border: 'none', letterSpacing: '2px', fontSize: '14px', fontWeight: 'bold' }}
           >
             {edit ? 'Actualizar' : 'Registrar Empleado'}
           </button>

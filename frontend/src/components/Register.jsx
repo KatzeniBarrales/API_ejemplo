@@ -6,7 +6,6 @@ const Register = () => {
     const navigate = useNavigate();
     const { registerUser } = useUser();
     
-    // El nivel se inicializa automáticamente en "1"
     const [dataUser, setDataUser] = useState({
         correo: "", 
         password: "", 
@@ -24,22 +23,21 @@ const Register = () => {
     }
 
     return (
-        <div className="container-fluid" style={{ backgroundColor: '#f8f9fa', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ backgroundColor: '#bbc0c7', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '50px', paddingBottom: '50px' }}>
             <div className="card shadow-sm" style={{ width: '450px', border: 'none', borderRadius: '8px', backgroundColor: '#fff' }}>
                 <div className="p-4">
                     
-                    {/* ICONO Y TÍTULO ESTILO MINIMALISTA */}
                     <div className="text-center mb-4">
                         <i className="fas fa-user-plus mb-3" style={{ fontSize: '70px', color: '#333' }}></i>
                         <h4 className="text-uppercase" style={{ color: '#555', letterSpacing: '3px', fontWeight: '300' }}>
-                            Registro de Usuario
+                            Registro de Jefe
                         </h4>
                     </div>
 
                     <form onSubmit={register}>
                         {/* NOMBRE */}
                         <div className="mb-4">
-                            <label className="form-label" style={{ color: '#999', fontSize: '14px' }}>Nombre:</label>
+                            <label className="form-label" style={{ color: '#000000', fontSize: '14px' }}>Nombre:</label>
                             <input 
                                 type="text" 
                                 name="name" 
@@ -53,7 +51,7 @@ const Register = () => {
 
                         {/* CORREO */}
                         <div className="mb-4">
-                            <label className="form-label" style={{ color: '#999', fontSize: '14px' }}>Correo:</label>
+                            <label className="form-label" style={{ color: '#000000', fontSize: '14px' }}>Correo:</label>
                             <input 
                                 type="email" 
                                 name="correo" 
@@ -64,9 +62,22 @@ const Register = () => {
                             />
                         </div>
 
+                        {/* NIVEL (MOSTRAR SIN EDITAR) */}
+                        <div className="mb-4">
+                            <label className="form-label" style={{ color: '#000000', fontSize: '14px' }}>Nivel:</label>
+                            <input 
+                                type="text" 
+                                name="nivel" 
+                                className="form-control" 
+                                value="1 "
+                                readOnly
+                                style={{ backgroundColor: '#e9ecef', border: 'none', height: '45px', color: '#6c757d', cursor: 'not-allowed' }}
+                            />
+                        </div>
+
                         {/* CONTRASEÑA */}
                         <div className="mb-5">
-                            <label className="form-label" style={{ color: '#999', fontSize: '14px' }}>Contraseña:</label>
+                            <label className="form-label" style={{ color: '#000000', fontSize: '14px' }}>Contraseña:</label>
                             <input 
                                 type="password" 
                                 name="password" 
@@ -77,7 +88,6 @@ const Register = () => {
                             />
                         </div>
 
-                        {/* BOTÓN NEGRO SÓLIDO */}
                         <button 
                             type="submit" 
                             className="btn btn-dark w-100 py-3 text-uppercase" 

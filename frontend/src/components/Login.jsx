@@ -19,7 +19,6 @@ export const Login = () => {
     }
     
   return (
-    /* Solo añadimos el estilo de fondo gris y min-height al div principal */
     <div style={{ backgroundColor: '#bbc0c7', minHeight: '100vh', paddingTop: '50px' }}>
       <div className='container mt-4'>
         <div className='row'>

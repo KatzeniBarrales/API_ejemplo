@@ -79,18 +79,17 @@ empleadoCtrl.updateEmpleado = async(req,res)=>{
   }
 }
 
-empleadoCtrl.searchEmployee = async(req,res) =>{
+empleadoCtrl.searchEmployee = async (req, res) => {
   try {
-    //buscar por nombres
-    const {nombres} = req.params;
+    const { nombres } = req.params;
     const resp = await EmpleadoModel.find({
-      nombres:{$regex: ".*" + nombres + ".*"},
+      // Usamos 'name' para coincidir con tu frontend
+      name: { $regex: ".*" + nombres + ".*", $options: "i" }, 
       jefe: req.userid,
     });
-    messageGeneral(res,200,true,resp,"");
+    messageGeneral(res, 200, true, resp, "");
   } catch (error) {
-    messageGeneral(res,500,false,"",error.message);
+    messageGeneral(res, 500, false, "", error.message);
   }
 };
-
 export default empleadoCtrl;
