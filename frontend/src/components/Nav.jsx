@@ -22,7 +22,7 @@ export const Nav = () => {
             fontSize: '18px', 
             letterSpacing: '3px', 
             fontWeight: '600',
-            color: '#fff'
+            color: '#ad9dda'
           }}>
             <i className='fas fa-motorcycle me-2'></i> 
             Refaccionaria de Motos
