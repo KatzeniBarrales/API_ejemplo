@@ -1,149 +1,100 @@
-import React, {useState, useEffect} from 'react';
-
-import axios from 'axios';
-import Swal from 'sweetalert2';
+import React from 'react';
 import { Modal } from 'react-responsive-modal';
+import 'react-responsive-modal/styles.css';
 
-const ModalActions = ({open,onCloseModal,getEmployees,edit,employee}) => {
-    const initialState = {
-        nombres:"",
-        apellidos:"",
-        id:"",
-        correo:"",
-        tcontrato:"Fijo"
-    }
-   
-const [dataEmployee, setDataEmployee]=useState(initialState);
-const tcontratos=["Fijo","Temporal","Practicante"];
+const ModalActions = ({ open, onCloseModal, data, setData, save, edit }) => {
 
-const handleChange=(e)=>{
-      setDataEmployee({...dataEmployee,[e.target.name]:e.target.value});
-}
-
- useEffect(()=>{
-    edit ? setDataEmployee(employee):setDataEmployee(initialState);
-    //eslint-disable-next-line
-  },[edit,employee]);
-
-const saveEmployee= async(e)=>{
-    try {
-      //e.preventDefault();
-      const { data } = await axios.post("/empleado",dataEmployee);
-      Swal.fire({
-        icon: 'success',
-        title: data.message,
-        showConfirmButton: false,
-        timer: 1500
-      });
-      onCloseModal();
-      getEmployees();
-    } catch (error) {
-      if(!error.response.data.ok){
-        return Swal.fire({
-           icon: 'error',
-           title: error.response.data.message,
-           showConfirmButton: false,
-           timer: 1500
-         });
-       }
-       console.log('error en la función saveEmployee',error.message);
-    }
+  const handleChange = (e) => {
+    setData({
+      ...data,
+      [e.target.name]: e.target.value
+    });
   };
 
-  const updateEmployee= async(e)=>{
-    try {
-      //e.preventDefault();
-      const { data } = await axios.put(`/empleado/update/${employee._id}`,dataEmployee);
-      Swal.fire({
-        icon: 'success',
-        title: data.message,
-        showConfirmButton: false,
-        timer: 1500
-      });
-      onCloseModal();
-      getEmployees();
-    } catch (error) {
-      if(!error.response.data.ok){
-        return Swal.fire({
-           icon: 'error',
-           title: error.response.data.message,
-           showConfirmButton: false,
-           timer: 1500
-         });
-       }
-       console.log('error en la función updateEmployee',error.message);
-    }
-  };
-
-  const actions=(e)=>{
+  const handleSubmit = (e) => {
     e.preventDefault();
-    edit ? updateEmployee() : saveEmployee();
-  }
+    // Forzamos el nivel 2 internamente antes de guardar
+    const dataWithLevel = { ...data, nivel: "2" };
+    
+    // Si tu función save usa directamente el estado 'data' del padre, 
+    // asegúrate de que el initialState en Employees.jsx ya tenga nivel: "2"
+    save(dataWithLevel); 
+  };
+
+  if (!data) return null;
 
   return (
-    <div>
-    <Modal open={open} onClose={onCloseModal} center>
-        <div className='card'>
-          <div className='card-header'>
-            <h5>{ edit ? 'Actualizar empleado' : 'Agregar empleado'}</h5>
-          </div>{/*card-header*/}
-          <div className='card-body'>
-            <form onSubmit={actions}>
-              <div className='mb-3'>
-                <label className='form-label'>Nombres:</label>
-                <input type="text" className='form-control'
-                  name="nombres" required autoFocus
-                  onChange={(e)=>handleChange(e)}
-                  value={dataEmployee.nombres}
-                />
-              </div>{/*mb-3*/}
-              <div className='mb-3'>
-                <label className='form-label'>Apellidos:</label>
-                <input type="text" className='form-control' name="apellidos" 
-                  required
-                  onChange={(e)=>handleChange(e)}
-                  value={dataEmployee.apellidos}
-                />
-              </div>{/*mb-3*/}
-              <div className='mb-3'>
-                <label className='form-label'>Correo:</label>
-                <input type="text" className='form-control' name="correo" 
-                  required
-                  onChange={(e)=>handleChange(e)}
-                  value={dataEmployee.correo}
-                />
-              </div>{/*mb-3*/}
-              <div className='mb-3'>
-                <label className='form-label'>Identificación:</label>
-                <input type="text" className='form-control'
-                  name="id" required
-                  onChange={(e)=>handleChange(e)}
-                  value={dataEmployee.id}
-                />
-              </div>{/*mb-3*/}
-              <div className='mb-3'>
-                <label className='form-label'>Tipo de contrato:</label>
-                <select name="tcontrato" className='form-select'
-                onChange={(e)=>handleChange(e)}
-                value={dataEmployee.tcontrato}>
-                  {
-                    tcontratos.map((item)=>(
-                      <option key={item} value={item}>{item}</option>
-                    ))
-                  }
-                </select>
-              </div>{/*mb-3*/}
-              <div className='mb-3'>
-                <button type="submit" className='btn btn-primary form-control'>
-                  {edit ? 'Actualizar' : 'Guardar'}
-                </button>
-              </div>{/*mb-3*/}
-            </form>
-          </div>{/*card-body */}
-        </div>{/*card*/}
-      </Modal>
-    </div>
-  )
-}
+    <Modal open={open} onClose={onCloseModal} center classNames={{ modal: 'customModal' }}>
+      <div className="p-2" style={{ minWidth: '350px' }}>
+        
+        <div className="text-center mb-4">
+          <i className="fas fa-user-plus mb-3" style={{ fontSize: '50px', color: '#888', marginTop: '10px' }}></i>
+          <h4 className="text-uppercase" style={{ color: '#555', letterSpacing: '3px', fontWeight: '300' }}>
+            {edit ? 'Editar Empleado' : 'Añadir Empleado'}
+          </h4>
+          {/* Badge sutil para indicar el rol automáticamente */}
+          <span className="badge bg-light text-dark border text-uppercase" style={{ fontSize: '10px', letterSpacing: '1px' }}>
+            Nivel 2 [Empleado]
+          </span>
+        </div>
 
-export default ModalActions
+        <form onSubmit={handleSubmit}>
+          {/* NOMBRE */}
+          <div className="mb-4">
+            <label className="form-label" style={{ color: '#999', fontSize: '14px' }}>Nombre:</label>
+            <input 
+              type="text" 
+              name="name" 
+              value={data.name || ""} 
+              className="form-control" 
+              style={{ backgroundColor: '#f2f2f2', border: 'none', height: '45px' }}
+              autoFocus
+              onChange={handleChange} 
+              required 
+            />
+          </div>
+
+          {/* CORREO */}
+          <div className="mb-4">
+            <label className="form-label" style={{ color: '#999', fontSize: '14px' }}>Correo:</label>
+            <input 
+              type="email" 
+              name="correo" 
+              value={data.correo || ""} 
+              className="form-control" 
+              style={{ backgroundColor: '#f2f2f2', border: 'none', height: '45px' }}
+              onChange={handleChange} 
+              required 
+            />
+          </div>
+
+          {/* CONTRASEÑA (SOLO PARA REGISTRO NUEVO) */}
+          {!edit && (
+            <div className="mb-5">
+              <label className="form-label" style={{ color: '#999', fontSize: '14px' }}>Contraseña:</label>
+              <input 
+                type="password" 
+                name="password" 
+                value={data.password || ""} 
+                className="form-control" 
+                style={{ backgroundColor: '#f2f2f2', border: 'none', height: '45px' }}
+                onChange={handleChange} 
+                required 
+              />
+            </div>
+          )}
+
+          <button 
+            type="submit" 
+            className="btn btn-dark w-100 py-3 text-uppercase" 
+            style={{ backgroundColor: '#1a1a1a', border: 'none', letterSpacing: '2px', fontSize: '14px' }}
+          >
+            {edit ? 'Actualizar' : 'Registrar Empleado'}
+          </button>
+        </form>
+      </div>
+    </Modal>
+  );
+};
+
+export default ModalActions;

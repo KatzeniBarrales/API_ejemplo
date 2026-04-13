@@ -1,67 +1,95 @@
-import React from 'react'
-import {useUser} from '../context/UserContext';
-import { useState } from 'react';
+import React, { useState } from 'react'
+import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
     const navigate = useNavigate();
-    const {registerUser} = useUser();
-    const [dataUser, setDataUser] = useState({correo:"", password:"", name:"", nivel:""});
-    const handleChange=(e)=>{
-      setDataUser({...dataUser,[e.target.name]:e.target.value});
+    const { registerUser } = useUser();
+    
+    // El nivel se inicializa automáticamente en "1"
+    const [dataUser, setDataUser] = useState({
+        correo: "", 
+        password: "", 
+        name: "", 
+        nivel: "1" 
+    });
+
+    const handleChange = (e) => {
+        setDataUser({ ...dataUser, [e.target.name]: e.target.value });
     }
-    const register=(e)=>{
-      e.preventDefault();
-      registerUser(dataUser,navigate);
+
+    const register = (e) => {
+        e.preventDefault();
+        registerUser(dataUser, navigate);
     }
-  return (
-    <div>
-<div className='container mt-4'>
-      <div className='row'>
-        <div className='col-md-6 mx-auto'>
-          <div className='card'>
-            <div className='container text-center'>
-              <i className='fas fa-user-plus fa-5x'></i>
+
+    return (
+        <div className="container-fluid" style={{ backgroundColor: '#f8f9fa', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="card shadow-sm" style={{ width: '450px', border: 'none', borderRadius: '8px', backgroundColor: '#fff' }}>
+                <div className="p-4">
+                    
+                    {/* ICONO Y TÍTULO ESTILO MINIMALISTA */}
+                    <div className="text-center mb-4">
+                        <i className="fas fa-user-plus mb-3" style={{ fontSize: '70px', color: '#333' }}></i>
+                        <h4 className="text-uppercase" style={{ color: '#555', letterSpacing: '3px', fontWeight: '300' }}>
+                            Registro de Usuario
+                        </h4>
+                    </div>
+
+                    <form onSubmit={register}>
+                        {/* NOMBRE */}
+                        <div className="mb-4">
+                            <label className="form-label" style={{ color: '#999', fontSize: '14px' }}>Nombre:</label>
+                            <input 
+                                type="text" 
+                                name="name" 
+                                className="form-control" 
+                                style={{ backgroundColor: '#f2f2f2', border: 'none', height: '45px' }}
+                                autoFocus
+                                onChange={handleChange} 
+                                required 
+                            />
+                        </div>
+
+                        {/* CORREO */}
+                        <div className="mb-4">
+                            <label className="form-label" style={{ color: '#999', fontSize: '14px' }}>Correo:</label>
+                            <input 
+                                type="email" 
+                                name="correo" 
+                                className="form-control" 
+                                style={{ backgroundColor: '#f2f2f2', border: 'none', height: '45px' }}
+                                onChange={handleChange} 
+                                required 
+                            />
+                        </div>
+
+                        {/* CONTRASEÑA */}
+                        <div className="mb-5">
+                            <label className="form-label" style={{ color: '#999', fontSize: '14px' }}>Contraseña:</label>
+                            <input 
+                                type="password" 
+                                name="password" 
+                                className="form-control" 
+                                style={{ backgroundColor: '#f2f2f2', border: 'none', height: '45px' }}
+                                onChange={handleChange} 
+                                required 
+                            />
+                        </div>
+
+                        {/* BOTÓN NEGRO SÓLIDO */}
+                        <button 
+                            type="submit" 
+                            className="btn btn-dark w-100 py-3 text-uppercase" 
+                            style={{ backgroundColor: '#1a1a1a', border: 'none', letterSpacing: '2px', fontWeight: 'bold' }}
+                        >
+                            Registrar
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div className='card-header text-center mt-3'>
-              <h4>REGISTRO DE USUARIOS</h4> 
-            </div>{/* card-header text-center mt-3 */}
-            <div className='card-body'>
-              <form onSubmit={register}>
-              <div className='mb-3'>
-                  <label className='form-label'>Nombre:</label>
-                  <input type="text" name="name" className='form-control' autoFocus
-                  onChange={(e)=>handleChange(e)} required/>
-                </div>
-                <div className='mb-3'>
-                  <label className='form-label'>Correo:</label>
-                  <input type="email" name="correo" className='form-control'
-                  onChange={(e)=>handleChange(e)} required/>
-                </div>
-                <div className='mb-3'>
-                  <label className='form-label'>Nivel:</label>
-                  <select name="nivel" className='form-control' 
-                  onChange={handleChange} required>
-                    <option value="">Selecciona un nivel</option>
-                    <option value="1">Nivel 1 [Administrador]</option>
-                    <option value="2">Nivel 2 [Empleado]</option>
-                  </select>
-                </div>
-                <div className='mb-3'>
-                  <label className='form-label'>Contraseña:</label>
-                  <input type="password" name="password" className='form-control'
-                  onChange={(e)=>handleChange(e)} required/>
-                </div>{/* mb-3 */}
-                <button type="submit" className='form-control btn btn-primary'>
-                Registrar
-              </button>
-              </form>
-            </div>{/* card-body */}
-          </div>{/* card */}
-        </div>{/* col-md-6 mx-auto */}
-      </div>{/* row */}
-    </div>{/*container mt-4*/}</div>
-  )
+        </div>
+    )
 }
 
 export default Register
