@@ -2,15 +2,13 @@ import React, { useState } from 'react';
 import { useUser } from '../context/UserContext';
 import { useVenta } from '../context/VentaContext'; 
 import ModalActionsVentas from './ModalActionsVentas';
-import Swal from "sweetalert2"; // Importado
-import axios from 'axios';      // Importado
+import Swal from "sweetalert2"; 
+import axios from 'axios';      
 
 const Ventas = () => {
   const { user } = useUser();
-  // Jalamos las funciones y el estado del Contexto de Ventas
   const { ventas, deleteVenta, searchVenta, getVentas } = useVenta();
 
-  // Manejo de ventana modal
   const [venta, setVenta] = useState({});
   const [edit, setEdit] = useState(false);
   const [open, setOpen] = useState(false);
@@ -23,7 +21,6 @@ const Ventas = () => {
   
   const onCloseModal = () => setOpen(false);
 
-  // Función de búsqueda local que llama al contexto
   const handleSearch = (value) => {
     searchVenta(value);
   };
@@ -74,6 +71,7 @@ const Ventas = () => {
                         <th>Precio U.</th>
                         <th>IVA (10%)</th>
                         <th>Total</th>
+                        <th>Fecha</th> {/* Nueva columna Fecha */}
                         <th className="text-center">Acciones</th>
                       </tr>
                     </thead>
@@ -93,6 +91,10 @@ const Ventas = () => {
                               <td>${item.Iva ? item.Iva.toFixed(2) : "0.00"}</td>
                               <td className='text-success fw-bold'>
                                 ${item.Total ? item.Total.toFixed(2) : "0.00"}
+                              </td>
+                              {/* Campo de Fecha formateado después del Total */}
+                              <td className="text-muted">
+                                {item.fecha ? new Date(item.fecha).toLocaleDateString() : "---"}
                               </td>
                               <td className="text-center">
                                 <button 
@@ -130,7 +132,6 @@ const Ventas = () => {
         </div>
       </section>
 
-      {/* Modal Actions Ventas */}
       <ModalActionsVentas 
         open={open} 
         onCloseModal={onCloseModal} 
